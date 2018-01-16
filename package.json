@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://akamuraasai.github.io/simulation_viewer",
   "dependencies": {
+    "ramda": "^0.25.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.0",

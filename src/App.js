@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { head } from 'ramda';
 import { Table, Container, Button, Header, Modal, Icon, Dropdown } from 'semantic-ui-react';
 import json10_90_7 from './simulations90-10_7';
 import json20_80_7 from './simulations80-20_7';
@@ -23,7 +24,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { filter: '', modalOpen: false, transactions: [], json: [], type: 11 };
+    this.state = { filter: '', modalOpen: false, marketModal: false, transactions: [], json: [], type: 11, marketData: [] };
   }
 
   handleChange = (e, { name, value }) => {
@@ -47,9 +48,7 @@ class App extends Component {
     };
 
     const json = types[value].sort((a, b) => a.final - b.final).reverse();
-    this.setState({json});
     this.setState({ type: value, json })
-
   };
 
   setFilter = filter => () => {
@@ -57,8 +56,45 @@ class App extends Component {
   };
 
   handleOpen = transactions => () => this.setState({ modalOpen: true, transactions });
-
   handleClose = () => this.setState({ modalOpen: false, transactions: [] });
+
+  handleOpenMarket = market => () => {
+
+    const days7 = [
+      ...json10_90_7.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 10 / 90`, final_7: item.final })),
+      ...json20_80_7.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 20 / 80`, final_7: item.final })),
+      ...json30_70_7.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 30 / 70`, final_7: item.final })),
+      ...json40_60_7.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 40 / 60`, final_7: item.final })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
+
+    const days14 = [
+      ...json10_90_14.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 10 / 90`, final_14: item.final })),
+      ...json20_80_14.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 20 / 80`, final_14: item.final })),
+      ...json30_70_14.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 30 / 70`, final_14: item.final })),
+      ...json40_60_14.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 40 / 60`, final_14: item.final })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
+
+    const days20 = [
+      ...json10_90_20.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 10 / 90`, final_20: item.final })),
+      ...json20_80_20.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 20 / 80`, final_20: item.final })),
+      ...json30_70_20.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 30 / 70`, final_20: item.final })),
+      ...json40_60_20.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 40 / 60`, final_20: item.final })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
+
+    const days30 = [
+      ...json10_90_30.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 10 / 90`, final_30: item.final })),
+      ...json20_80_30.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 20 / 80`, final_30: item.final })),
+      ...json30_70_30.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 30 / 70`, final_30: item.final })),
+      ...json40_60_30.filter(item => item.name.includes(market)).map(item => ({ name: `${item.name} - 40 / 60`, final_30: item.final })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
+
+    // console.log(days7, days14, days20, days30);
+    const marketData = days7.map((item, ix) => ({ name: item.name, final_7: item.final_7, final_14: days14[ix].final_14, final_20: days20[ix].final_20, final_30: days30[ix].final_30 }));
+
+    this.setState({ marketModal: true, marketData });
+  };
+
+  handleCloseMarket = () => this.setState({ marketModal: false, marketData: [] });
 
   render() {
     const filtred = this.state.json.filter(item => item.name.includes(this.state.filter));
@@ -106,8 +142,8 @@ class App extends Component {
           </Table.Header>
           <Table.Body>
             {filtred.map( (item, ix) => (
-              <Table.Row positive={item.final > 0.1} negative={item.final < 0.1}>
-                <Table.Cell>{item.name}</Table.Cell>
+              <Table.Row positive={item.final > 0.1} negative={item.final < 0.1} key={ix}>
+                <Table.Cell><a onClick={this.handleOpenMarket(head(item.name.split(' ')))}>{item.name}</a></Table.Cell>
                 <Table.Cell>{item.btc}</Table.Cell>
                 <Table.Cell>{item.mkt}</Table.Cell>
                 <Table.Cell>US$ {(item.final * BTC_VALUE).toFixed(2)}</Table.Cell>
@@ -135,7 +171,7 @@ class App extends Component {
               </Table.Header>
               <Table.Body>
                 {this.state.transactions.map((op, ix) => (
-                  <Table.Row positive={op.op === 1} negative={op.op === 2}>
+                  <Table.Row positive={op.op === 1} negative={op.op === 2} key={ix}>
                     <Table.Cell>{op.op === 1 ? 'Buy' : 'Sell'}</Table.Cell>
                     <Table.Cell>{op.qnt}</Table.Cell>
                     <Table.Cell>{op.value}</Table.Cell>
@@ -148,6 +184,42 @@ class App extends Component {
           </Modal.Content>
           <Modal.Actions>
             <Button color='green' onClick={this.handleClose}>
+              <Icon name='checkmark' /> Close
+            </Button>
+          </Modal.Actions>
+        </Modal>
+
+        <Modal
+          open={this.state.marketModal}
+          onClose={this.handleCloseMarket}
+        >
+          <Header icon='browser' content='Market Balance' />
+          <Modal.Content>
+            <Table celled unstackable>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Market</Table.HeaderCell>
+                  <Table.HeaderCell>Last 7 Days</Table.HeaderCell>
+                  <Table.HeaderCell>Last 14 Days</Table.HeaderCell>
+                  <Table.HeaderCell>Last 20 Days</Table.HeaderCell>
+                  <Table.HeaderCell>Last 30 Days</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {this.state.marketData.map((data, ix) => (
+                  <Table.Row key={ix}>
+                    <Table.Cell>{data.name}</Table.Cell>
+                    <Table.Cell>US$ {(data.final_7 * BTC_VALUE).toFixed(2)}</Table.Cell>
+                    <Table.Cell>US$ {(data.final_14 * BTC_VALUE).toFixed(2)}</Table.Cell>
+                    <Table.Cell>US$ {(data.final_20 * BTC_VALUE).toFixed(2)}</Table.Cell>
+                    <Table.Cell>US$ {(data.final_30 * BTC_VALUE).toFixed(2)}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='green' onClick={this.handleCloseMarket}>
               <Icon name='checkmark' /> Close
             </Button>
           </Modal.Actions>
