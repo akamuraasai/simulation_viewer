@@ -1,9 +1,21 @@
 import React, { Component } from 'react';
 import { Table, Container, Button, Header, Modal, Icon, Dropdown } from 'semantic-ui-react';
-import json10_90 from './simulations90-10';
-import json20_80 from './simulations80-20';
-import json30_70 from './simulations70-30';
-import json40_60 from './simulations60-40';
+import json10_90_7 from './simulations90-10_7';
+import json20_80_7 from './simulations80-20_7';
+import json30_70_7 from './simulations70-30_7';
+import json40_60_7 from './simulations60-40_7';
+import json10_90_14 from './simulations90-10_14';
+import json20_80_14 from './simulations80-20_14';
+import json30_70_14 from './simulations70-30_14';
+import json40_60_14 from './simulations60-40_14';
+import json10_90_20 from './simulations90-10_20';
+import json20_80_20 from './simulations80-20_20';
+import json30_70_20 from './simulations70-30_20';
+import json40_60_20 from './simulations60-40_20';
+import json10_90_30 from './simulations90-10_30';
+import json20_80_30 from './simulations80-20_30';
+import json30_70_30 from './simulations70-30_30';
+import json40_60_30 from './simulations60-40_30';
 
 const BTC_VALUE = 13874;
 
@@ -11,31 +23,27 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { filter: '', modalOpen: false, transactions: [], json: [], type: 3 };
+    this.state = { filter: '', modalOpen: false, transactions: [], json: [], type: 11 };
   }
-
-  componentDidMount() {
-    this.getTransactions();
-  }
-
-  getTransactions = () => {
-    const types = {
-      1: json10_90,
-      2: json20_80,
-      3: json30_70,
-      4: json40_60,
-    };
-
-    const json = types[this.state.type].sort((a, b) => a.final - b.final).reverse();
-    this.setState({json});
-  };
 
   handleChange = (e, { name, value }) => {
     const types = {
-      1: json10_90,
-      2: json20_80,
-      3: json30_70,
-      4: json40_60,
+      1: json10_90_7,
+      2: json20_80_7,
+      3: json30_70_7,
+      4: json40_60_7,
+      5: json10_90_14,
+      6: json20_80_14,
+      7: json30_70_14,
+      8: json40_60_14,
+      9: json10_90_20,
+      10: json20_80_20,
+      11: json30_70_20,
+      12: json40_60_20,
+      13: json10_90_30,
+      14: json20_80_30,
+      15: json30_70_30,
+      16: json40_60_30,
     };
 
     const json = types[value].sort((a, b) => a.final - b.final).reverse();
@@ -55,10 +63,22 @@ class App extends Component {
   render() {
     const filtred = this.state.json.filter(item => item.name.includes(this.state.filter));
     const rsiTypes = [
-      { value: 1, text: 'Min 10 and Max 90' },
-      { value: 2, text: 'Min 20 and Max 80' },
-      { value: 3, text: 'Min 30 and Max 70' },
-      { value: 4, text: 'Min 40 and Max 60' },
+      { value: 1, text: '7 days - Min 10 and Max 90' },
+      { value: 2, text: '7 days - Min 20 and Max 80' },
+      { value: 3, text: '7 days - Min 30 and Max 70' },
+      { value: 4, text: '7 days - Min 40 and Max 60' },
+      { value: 5, text: '14 days - Min 10 and Max 90' },
+      { value: 6, text: '14 days - Min 20 and Max 80' },
+      { value: 7, text: '14 days - Min 30 and Max 70' },
+      { value: 8, text: '14 days - Min 40 and Max 60' },
+      { value: 9, text: '20 days - Min 10 and Max 90' },
+      { value: 10, text: '20 days - Min 20 and Max 80' },
+      { value: 11, text: '20 days - Min 30 and Max 70' },
+      { value: 12, text: '20 days - Min 40 and Max 60' },
+      { value: 13, text: '30 days - Min 10 and Max 90' },
+      { value: 14, text: '30 days - Min 20 and Max 80' },
+      { value: 15, text: '30 days - Min 30 and Max 70' },
+      { value: 16, text: '30 days - Min 40 and Max 60' },
     ];
 
     return (
