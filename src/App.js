@@ -18,7 +18,8 @@ import json20_80_30 from './simulations80-20_30';
 import json30_70_30 from './simulations70-30_30';
 import json40_60_30 from './simulations60-40_30';
 
-const BTC_VALUE = 13874;
+const BTC_VALUE = 11415;
+const INITIAL_VALUE = 0.01848073;
 
 class App extends Component {
   constructor(props) {
@@ -120,7 +121,7 @@ class App extends Component {
     return (
       <Container>
         <br />
-        <Header>Initial Value: US${(BTC_VALUE * 0.1).toFixed(2)}</Header>
+        <Header>Initial Value: US${(BTC_VALUE * INITIAL_VALUE).toFixed(2)}</Header>
         <Button.Group>
           <Button onClick={this.setFilter('')}>Todos</Button>
           <Button onClick={this.setFilter(' 5m')}>5 Minutos</Button>
@@ -142,7 +143,7 @@ class App extends Component {
           </Table.Header>
           <Table.Body>
             {filtred.map( (item, ix) => (
-              <Table.Row positive={item.final > 0.1} negative={item.final < 0.1} key={ix}>
+              <Table.Row positive={item.final > INITIAL_VALUE} negative={item.final < INITIAL_VALUE} key={ix}>
                 <Table.Cell><a onClick={this.handleOpenMarket(head(item.name.split(' ')))}>{item.name}</a></Table.Cell>
                 <Table.Cell>{item.btc}</Table.Cell>
                 <Table.Cell>{item.mkt}</Table.Cell>
